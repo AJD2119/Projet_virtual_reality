@@ -6,9 +6,9 @@ public class FoxRaycastInteract : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.T))
         {
-            Debug.Log("E"); 
+            Debug.Log("T"); 
             if (fox != null)
             {
                 fox.Pet();
