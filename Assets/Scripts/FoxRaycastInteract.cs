@@ -8,6 +8,7 @@ public class FoxRaycastInteract : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.E))
         {
+            Debug.Log("E"); 
             if (fox != null)
             {
                 fox.Pet();
@@ -15,6 +16,7 @@ public class FoxRaycastInteract : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.R))
         {
+            Debug.Log("R"); 
             if (fox != null)
             {
                 fox.Roulade();
