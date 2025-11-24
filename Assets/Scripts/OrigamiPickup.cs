@@ -12,11 +12,15 @@ public class OrigamiPickupSystem : MonoBehaviour
 
     [Header("UI")]
     public TextMeshProUGUI pickupPrompt;
-    public TextMeshProUGUI counterText; // Displays "Found X / 12"
+    public TextMeshProUGUI counterText;
 
     [Header("Inventory")]
     public List<string> collectedOrigamis = new List<string>();
-    public int totalOrigamis = 12; // Total origamis in the level
+    public int totalOrigamis = 12;
+
+    [Header("Audio")]
+    public AudioSource audioSource;       // Drag your AudioSource here
+    public AudioClip pickupSound;         // Drag your paper crumble sound here
 
     private Camera cam;
     private Outline lastHighlighted;
@@ -30,7 +34,6 @@ public class OrigamiPickupSystem : MonoBehaviour
         if (pickupPrompt != null)
             pickupPrompt.gameObject.SetActive(false);
 
-        // Initialize counter
         if (counterText != null)
             counterText.text = $"Origamis: 0 / {totalOrigamis}";
     }
@@ -40,13 +43,11 @@ public class OrigamiPickupSystem : MonoBehaviour
         HandleHighlighting();
         HandlePickup();
 
-        // Visualize ray in Scene view
         Debug.DrawRay(cam.transform.position, cam.transform.forward * pickupRange, Color.green);
     }
 
     void HandleHighlighting()
     {
-        // Disable previous outline & hide prompt
         if (lastHighlighted != null)
         {
             lastHighlighted.enabled = false;
@@ -61,14 +62,8 @@ public class OrigamiPickupSystem : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit, pickupRange, easterEggLayer))
         {
-            // Debug: show what the raycast hits
-            Debug.Log("Ray hit: " + hit.collider.name +
-                      " | Layer: " + LayerMask.LayerToName(hit.collider.gameObject.layer) +
-                      " | Tag: " + hit.collider.tag);
-
             if (hit.collider.CompareTag("Origami"))
             {
-                // Enable outline
                 Outline outline = hit.collider.GetComponent<Outline>();
                 if (outline != null)
                 {
@@ -76,14 +71,9 @@ public class OrigamiPickupSystem : MonoBehaviour
                     lastHighlighted = outline;
                 }
 
-                // Show UI prompt
                 if (pickupPrompt != null)
                     pickupPrompt.gameObject.SetActive(true);
             }
-        }
-        else
-        {
-            Debug.Log("Ray hit nothing");
         }
     }
 
@@ -96,35 +86,27 @@ public class OrigamiPickupSystem : MonoBehaviour
 
             if (Physics.Raycast(ray, out hit, pickupRange, easterEggLayer))
             {
-                // Debug: show what is being picked up
-                Debug.Log("Pickup Ray hit: " + hit.collider.name +
-                          " | Layer: " + LayerMask.LayerToName(hit.collider.gameObject.layer) +
-                          " | Tag: " + hit.collider.tag);
-
                 if (hit.collider.CompareTag("Origami"))
                 {
                     Debug.Log("Picked up: " + hit.collider.name);
                     collectedOrigamis.Add(hit.collider.name);
 
-                    // Update on-screen counter
                     if (counterText != null)
                         counterText.text = $"Origamis: {collectedOrigamis.Count} / {totalOrigamis}";
 
-                    // Disable outline
                     Outline outline = hit.collider.GetComponent<Outline>();
                     if (outline != null)
                         outline.enabled = false;
 
+                    // 🔊 Play crumble/paper sound
+                    if (audioSource != null && pickupSound != null)
+                        audioSource.PlayOneShot(pickupSound);
+
                     Destroy(hit.collider.gameObject);
 
-                    // Hide pickup prompt
                     if (pickupPrompt != null)
                         pickupPrompt.gameObject.SetActive(false);
                 }
-            }
-            else
-            {
-                Debug.Log("Pickup Ray hit nothing");
             }
         }
     }
