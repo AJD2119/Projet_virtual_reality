@@ -2539,7 +2539,7 @@ MonoBehaviour:
   pickupKey: 101
   easterEggLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
   pickupPrompt: {fileID: 1306671418}
   counterText: {fileID: 65269196}
   collectedOrigamis: []
